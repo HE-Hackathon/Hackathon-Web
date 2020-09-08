@@ -1,13 +1,13 @@
 import { container } from "assets/jss/material-kit-react.js";
 
 const homeDashboardPageStyle = {
-  container: {
-    // ...container,
+  container: {    
     zIndex: "2",
     position: "absolute",
     paddingTop: "15vh",
     color: "#000",    
     flexGrow: 1,    
+    background : "#eee"
   },  
   pageHeader: {
     minHeight: "100vh",
@@ -29,7 +29,7 @@ const homeDashboardPageStyle = {
       display: "block",
       left: "0",
       top: "0",
-      content: '""'
+      content: '""',      
     },
     "& footer li a,& footer li a:hover,& footer li a:active": {
       color: "#FFFFFF"
@@ -47,9 +47,12 @@ const homeDashboardPageStyle = {
     display: 'flex', 
     justifyContent :'center', 
     alignItems: 'center',     
-    backgroundColor : '#fff'
+    backgroundColor : '#fff',
   },
-
+  getCenter : {
+    display : 'flex' , 
+    justifyContent:'center'
+  },
 
   form: {
     margin: "0",        
