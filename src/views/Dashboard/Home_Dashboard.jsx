@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -12,7 +13,9 @@ import LinkedInIcon from "@material-ui/icons/LinkedIn";
 
 import { Grid, Paper, Button } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-
+import WorkExModal from "../Components/ProfileModals/WorkExModal";
+import ProjectModal from "../Components/ProfileModals/ProjectModal";
+import AchievementsModal from "../Components/ProfileModals/AchievementsModal";
 import AboutMe from "../Components/AboutMe/aboutMe";
 import ProfileSkills from "../Components/Skills/ProfileSkills";
 import WorkEx from "../Components/WorkEx/WorkEx";
@@ -124,6 +127,38 @@ const Home_Dashboard = (props) => {
         "Created a deployable and maintainable Library Management System using PHP for backend and MYSQL database along with AJAX, JS, JQuery.",
     },
   ];
+  // const [WorkEx, handleAddWorkEx] = useState(profileWorkEx);
+
+  const [WorkExModalOpen, UpdateWorkExModal] = useState(false);
+  const handleAddWorkEx = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateWorkExModal(true);
+  };
+  const closeWorkExModal = () => {
+    UpdateWorkExModal(false);
+  };
+
+  const [AchievementsModalOpen, UpdateAchievementsModal] = useState(false);
+  const openAddAchievements = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateAchievementsModal(true);
+  };
+  const closeAchievementsModal = () => {
+    UpdateAchievementsModal(false);
+  };
+
+  const [ProjectModalOpen, UpdateProjectModal] = useState(false);
+  const openAddProject = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateProjectModal(true);
+  };
+  const closeProjectModal = () => {
+    UpdateProjectModal(false);
+  };
+
   return (
     <div>
       <Header
@@ -198,6 +233,11 @@ const Home_Dashboard = (props) => {
                     <p style={{ fontSize: 25, fontWeight: "bolder" }}>
                       Work Experience
                     </p>
+                    <WorkExModal
+                      classes={classes}
+                      open={WorkExModalOpen}
+                      close={closeWorkExModal}
+                    />
                   </GridItem>
                   <GridItem
                     container
@@ -214,10 +254,11 @@ const Home_Dashboard = (props) => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={handleAddProject}
+                      onClick={handleAddWorkEx}
                       style={{ height: 30 }}
                     >
                       Add New Work Experience
+                      {/* <WorkExModal /> */}
                     </Button>
                   </GridItem>
                   <WorkEx data={profileWorkEx} classes={classes} />
@@ -242,6 +283,11 @@ const Home_Dashboard = (props) => {
                       <p style={{ fontSize: 25, fontWeight: "bolder" }}>
                         PROJECTS
                       </p>
+                      <ProjectModal
+                        classes={classes}
+                        open={ProjectModalOpen}
+                        close={closeProjectModal}
+                      />
                     </GridItem>
                     <GridItem
                       container
@@ -254,7 +300,7 @@ const Home_Dashboard = (props) => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleAddProject}
+                        onClick={openAddProject}
                       >
                         Add New Project
                       </Button>
@@ -288,6 +334,11 @@ const Home_Dashboard = (props) => {
                       <p style={{ fontSize: 25, fontWeight: "bolder" }}>
                         Achievements
                       </p>
+                      <AchievementsModal
+                        classes={classes}
+                        open={AchievementsModalOpen}
+                        close={closeAchievementsModal}
+                      />
                     </GridItem>
                     <GridItem
                       container
@@ -300,7 +351,7 @@ const Home_Dashboard = (props) => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleAddProject}
+                        onClick={openAddAchievements}
                       >
                         Add New Achievement
                       </Button>
