@@ -4,10 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Header from "components/Header/Header";
 import HeaderLinks from "components/Header/HeaderLinks";
-import styles from "assets/jss/material-kit-react/views/loginPage.js";
-
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
+import styles from "assets/jss/material-kit-react/views/createProfile.js";
+import { Grid } from "@material-ui/core";
+import Checkout from "./Checkout";
 
 const useStyles = makeStyles(styles);
 
@@ -25,12 +24,13 @@ const Login_CreateProfile = (props) => {
         {...rest}
       />
       <div className={classes.pageHeader}>
-        <div className={classes.container}>
-          <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={4} style={{ color: "black" }}>
-              WORK IN PROGRESS
-            </GridItem>
-          </GridContainer>
+        <div
+          style={{ flexGrow: "1", width: "100%" }}
+          className={classes.container}
+        >
+          <Grid container xs={12} lg={12} sm={12}>            
+            <Checkout/>
+          </Grid>
         </div>
       </div>
     </div>

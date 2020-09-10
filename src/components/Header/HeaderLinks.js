@@ -26,7 +26,18 @@ export default function HeaderLinks() {
   const classes = useStyles();
   return (
     <List className={classes.list}>      
-    <ListItem className={classes.listItem}>
+    <ListItem className={classes.listItem}>      
+        <Link to="/feed">
+          <Button
+            color="transparent"            
+            target="_blank"
+            className={classes.navLink}
+          >
+            MY FEED
+          </Button>
+          </Link>
+    </ListItem>
+    <ListItem className={classes.listItem}>      
         <Link to="/dashboard">
           <Button
             color="transparent"            

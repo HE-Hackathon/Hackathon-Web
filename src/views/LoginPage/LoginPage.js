@@ -14,26 +14,108 @@ import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
-
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useSelector, useDispatch } from 'react-redux';
+import { userData } from '../../redux/actions/'
 
 const useStyles = makeStyles(styles);
+const baseUrl = "https://hackerearthhackathon.herokuapp.com";
 
 export default function LoginPage(props) {
-  const classes = useStyles();
-  const { ...rest } = props;
+
+  // const loginState = useSelector(state => state.login )
+  // console.log(loginState);
+  const dispatch = useDispatch();
+
+  const classes = useStyles();  
   const path = props.location.pathname;
 
-  const [age, setAge] = useState("Select a role");
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const [state, setState] = useState({ name : "" ,email : "", pass : "", role : "Select a role"});
+  
+  
+  // Functions
+
+  //Handle Input
+  const handleChange = (e) => {    
+    const { name, value } = e.target;
+    setState(prevState => ({
+        ...prevState,
+        [name]: value
+    }));
   };
 
+  //Handle Submit
+  const handleSubmit = () => { 
+
+    const options = {
+      headers : {
+        "Content-Type":"application/json",
+        "Access-Control-Allow-Origin" : "*"
+      }
+    };
+    
+    let data = {
+      email : state.email,
+      pass : state.pass,
+      isRecruiter : state.role === "developer" ? false : true
+    };    
+
+    if( path === '/register' ){
+
+      const register = "/regist_succ"; 
+
+      data['name'] = state.name;            
+      axios.post( baseUrl + register , data, options )
+        .then((res)=>{
+          console.log(res.data);
+          const data = res.data;
+          if(data.success===true){
+            props.history.push('/verify');
+          }else{
+            alert("User already registered");
+          }
+        })
+
+      
+    }else{      
+
+      const login = "/login_succ";    
+      axios.post( baseUrl + login , data, options)
+        .then((res)=>{
+          console.log(res.data);
+          const data = res.data;
+          if(data.value===200){
+            if(data.data.isVerified === false ){
+              alert('Please Verify Your Account');
+            }else{          
+              if(data.data.isCreatedProfile === true){
+                dispatch(userData(res.data));
+                props.history.push('/dashboard');
+              }else {
+                props.history.push('/createprofile');
+              }
+              
+              
+            }            
+          }else if(data.value===400){
+            alert("Username/Password do not match");
+          }else if(data.value===500){
+            alert("Please Register First");
+          }          
+        })
+
+    }
+  }
+  
   const name =
     path === "/register" ? (
       <CustomInput
         labelText="Name"
         id="name"
+        name = "name"
+        val = {state.name}
+        handleChange = {handleChange}
         formControlProps={{
           fullWidth: true,
         }}
@@ -62,6 +144,9 @@ export default function LoginPage(props) {
                     <CustomInput
                       labelText="Email id"
                       id="email"
+                      name = "email"
+                      val = {state.email}
+                      handleChange = {handleChange}
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -73,6 +158,9 @@ export default function LoginPage(props) {
                     <CustomInput
                       labelText="Password"
                       id="pass"
+                      name = "pass"
+                      val = {state.pass}
+                      handleChange = {handleChange}
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -83,7 +171,8 @@ export default function LoginPage(props) {
                     />
 
                     <Select
-                      value={age}
+                      value={state.role}
+                      name = "role"
                       onChange={handleChange}
                       displayEmpty
                       style={{ marginTop: 20 }}
@@ -101,11 +190,9 @@ export default function LoginPage(props) {
                     style={{ marginTop: 20 }}
                     className={classes.cardFooter}
                   >
-                    <Link
-                      to={path === "/register" ? "/verify" : "/createprofile"}
-                    >
-                      <Button color="primary">Get started</Button>
-                    </Link>
+                    {/* <Link to={path === "/register" ? "/verify" : "/createprofile"}> */}
+                      <Button onClick={handleSubmit} color="primary">Get started</Button>
+                    
                   </CardFooter>
 
                   <CardFooter className={classes.cardFooter}>
