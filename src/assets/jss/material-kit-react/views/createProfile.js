@@ -2,9 +2,11 @@ const signupPageStyle = {
   container: {    
     zIndex: "2",
     position: "relative",
-    paddingTop: "10vh",
+    paddingTop: "3vh",
     color: "#FFFFFF",
     paddingBottom: "200px",    
+    background: "#eee",
+
   },
   
   pageHeader: {
@@ -12,7 +14,7 @@ const signupPageStyle = {
     height: "auto",
     display: "inherit",
     position: "relative",
-    margin: "0",
+    margin: "0",    
     padding: "0",
     border: "0",
     alignItems: "center",

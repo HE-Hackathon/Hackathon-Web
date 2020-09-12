@@ -5,32 +5,30 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
+import { Grid, Tooltip } from "@material-ui/core";
 
 const ProfileAchievements = (props) => {
   const styles = {
     fontFamily: "Arial",
     fontSize: "1.2em",
-    // margin: 10,
+    marginLeft: 10,
     // border: "2px solid blue",
   };
   const classes = props.classes;
   return (
-    <GridItem
-      container
-      item
-      lg={12}
-      //   style={{ padding: 10, paddingLeft: 25 }}
-      //   alignItems="center"
-    >
+    <Grid xs={12} lg={12} >
+
       {props.data.map((value, index) => (
         <GridItem item lg={12} sm={5} xs={5} style={styles}>
-          <Card key={index} className={classes.root} style={{ padding: 10 }}>
-            <CardHeader
+          <Card key={value.id} className={classes.root} style={{ padding: 10 }}>
+          <CardHeader
               action={
+                <Tooltip title="Delete Achievement">
                 <DeleteIcon
-                  onClick={() => props.handleDelete(value.id)}
-                  style={{ marginRight: 3 }}
+                  onClick = { () => props.handleDelete(value.id) }                   
+                  style={{ marginRight: 5, cursor : "pointer" }}                  
                 ></DeleteIcon>
+                </Tooltip>
               }
               title={value.name}
             />
@@ -46,7 +44,7 @@ const ProfileAchievements = (props) => {
         </GridItem>
       ))}
       ;
-    </GridItem>
+    </Grid>
   );
 };
 export default ProfileAchievements;

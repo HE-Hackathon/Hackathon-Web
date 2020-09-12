@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -16,7 +16,7 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { userData } from '../../redux/actions/'
 
 const useStyles = makeStyles(styles);
@@ -24,14 +24,22 @@ const baseUrl = "https://hackerearthhackathon.herokuapp.com";
 
 export default function LoginPage(props) {
 
-  // const loginState = useSelector(state => state.login )
-  // console.log(loginState);
+  
   const dispatch = useDispatch();
 
   const classes = useStyles();  
   const path = props.location.pathname;
+  const [loading,setLoading] = useState(false);
 
-  const [state, setState] = useState({ name : "" ,email : "", pass : "", role : "Select a role"});
+  const [state, setState] = useState({ 
+        name : "" ,
+        email : "", 
+        pass : "", 
+        role : "", 
+        gender : "",
+        company_name:"",
+        associated_since_in_years: ""
+    });
   
   
   // Functions
@@ -47,6 +55,8 @@ export default function LoginPage(props) {
 
   //Handle Submit
   const handleSubmit = () => { 
+    
+    setLoading(true);
 
     const options = {
       headers : {
@@ -58,12 +68,18 @@ export default function LoginPage(props) {
     let data = {
       email : state.email,
       pass : state.pass,
-      isRecruiter : state.role === "developer" ? false : true
+      isRecruiter : state.role === "developer" ? false : true,      
+      gender : state.gender,
     };    
 
     if( path === '/register' ){
 
-      const register = "/regist_succ"; 
+      const register = "/regist_succ";     
+        
+      if(data.isRecruiter){
+        data.company_name = state.company_name;
+        data.associated_since_in_years = state.associated_since_in_years;
+      }
 
       data['name'] = state.name;            
       axios.post( baseUrl + register , data, options )
@@ -75,36 +91,40 @@ export default function LoginPage(props) {
           }else{
             alert("User already registered");
           }
+          setLoading(false);
         })
 
-      
     }else{      
-
+      
       const login = "/login_succ";    
       axios.post( baseUrl + login , data, options)
         .then((res)=>{
           console.log(res.data);
-          const data = res.data;
-          if(data.value===200){
-            if(data.data.isVerified === false ){
-              alert('Please Verify Your Account');
-            }else{          
-              if(data.data.isCreatedProfile === true){
-                dispatch(userData(res.data));
-                props.history.push('/dashboard');
-              }else {
-                props.history.push('/createprofile');
-              }
-              
-              
-            }            
-          }else if(data.value===400){
-            alert("Username/Password do not match");
-          }else if(data.value===500){
-            alert("Please Register First");
-          }          
-        })
+          const datares = res.data;
+          dispatch(userData(res.data));     
 
+          if(datares.value===200){
+            if(datares.data.isVerified === false ){
+              alert('Please Verify Your Account');
+            }else{                
+              if(datares.isRecruiter){                             
+                props.history.push('/rdashboard');
+              }else{
+                if(datares.data.isCreatedProfile === true){                                                   
+                  props.history.push('/feed');
+                }else {                                                                  
+                  props.history.push('/createprofile');
+                } 
+              }                                   
+            }            
+          }else if(datares.value===400){
+            alert("Username/Password do not match");
+          }else if(datares.value===500){
+            alert("Please Register First");
+          }  
+          setLoading(false);
+        })
+        
     }
   }
   
@@ -116,17 +136,69 @@ export default function LoginPage(props) {
         name = "name"
         val = {state.name}
         handleChange = {handleChange}
-        formControlProps={{
+      formControlProps={{
           fullWidth: true,
         }}
         inputProps={{
           type: "text",
-          autoComplete: "off",
+          autoComplete: "off",          
         }}
-      />
+      />      
     ) : (
       ""
     );
+
+    const gender = 
+      path === '/register' ? (
+      <Select
+          value={state.gender}
+          name = "gender"
+          onChange={handleChange}
+          displayEmpty
+          style={{ marginTop: 10 }}
+          fullWidth={true}
+          className={classes.selectEmpty}
+          inputProps={{ "aria-label": "Without label" }}                    
+        >
+          <MenuItem value="" disabled>Gender </MenuItem>
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+        </Select>
+      ) : ( " " )
+
+    const recruiter = 
+        path === '/register' && state.role ==='recruiter' ? (
+          <Fragment>
+            <CustomInput
+                labelText="Company Name"
+                id="company_name"
+                name = "company_name"
+                val = {state.company_name}
+                handleChange = {handleChange}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  type: "name",
+                  autoComplete: "off",
+                }}
+            />
+            <CustomInput
+                labelText="Experience ( in years ) "
+                id="associated_since_in_years"
+                name = "associated_since_in_years"
+                val = {state.associated_since_in_years}              
+                handleChange = {handleChange}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  type: "number",                  
+                  autoComplete: "off",                
+                }}
+            />
+          </Fragment>
+        ) : ( " " )
 
   return (
     <div>
@@ -136,11 +208,9 @@ export default function LoginPage(props) {
             <GridItem xs={12} sm={12} md={4}>
               <Card>
                 <form className={classes.form}>
-                  <p className={classes.divider}>                    
-                    {path === "/" ? "LOGIN" : "REGISTER"}
-                  </p>
+                  <p className={classes.divider}>{path === "/" ? "LOGIN" : "REGISTER"}</p>
                   <CardBody>
-                    {name}
+                    {name}                    
                     <CustomInput
                       labelText="Email id"
                       id="email"
@@ -168,31 +238,36 @@ export default function LoginPage(props) {
                         type: "password",
                         autoComplete: "off",
                       }}
-                    />
+                    />                    
+                    
+                    {gender}
 
                     <Select
                       value={state.role}
                       name = "role"
                       onChange={handleChange}
                       displayEmpty
-                      style={{ marginTop: 20 }}
+                      style={{ marginTop: 30 }}
                       fullWidth={true}
                       className={classes.selectEmpty}
                       inputProps={{ "aria-label": "Without label" }}
                     >
-                      <MenuItem value="Select a role">Select a role </MenuItem>
+                      <MenuItem value="" disabled>Select a role </MenuItem>
                       <MenuItem value="developer">Developer</MenuItem>
                       <MenuItem value="recruiter">Recruiter</MenuItem>
                     </Select>
-                  </CardBody>
 
+                    {recruiter}
+
+                  </CardBody>
+                  
                   <CardFooter
                     style={{ marginTop: 20 }}
                     className={classes.cardFooter}
-                  >
-                    {/* <Link to={path === "/register" ? "/verify" : "/createprofile"}> */}
-                      <Button onClick={handleSubmit} color="primary">Get started</Button>
-                    
+                  >                    
+                      <Button onClick={handleSubmit} color="primary">
+                        { !loading ? "Get started" : path === '/register' ? "Registering..." : "Logging in..." }
+                      </Button>
                   </CardFooter>
 
                   <CardFooter className={classes.cardFooter}>

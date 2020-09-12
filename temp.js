@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import Header from "components/Header/Header";
@@ -6,9 +8,11 @@ import HeaderLinks from "components/Header/HeaderLinks";
 import styles from "assets/jss/material-kit-react/views/homeDashboard.js";
 import Project from "../Projects/projects";
 import GridItem from "components/Grid/GridItem.js";
+import GitHubIcon from "@material-ui/icons/GitHub";
+import LinkedInIcon from "@material-ui/icons/LinkedIn";
 
-
-import { Grid, Button } from "@material-ui/core";
+import { Grid, Paper, Button } from "@material-ui/core";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import WorkExModal from "../Components/ProfileModals/WorkExModal";
 import ProjectModal from "../Components/ProfileModals/ProjectModal";
 import AchievementsModal from "../Components/ProfileModals/AchievementsModal";
@@ -17,202 +21,86 @@ import ProfileSkills from "../Components/Skills/ProfileSkills";
 import WorkEx from "../Components/WorkEx/WorkEx";
 import ProfileAchievements from "../Components/ProfileAchievements/ProfileAchievements";
 import ProfileEducation from "../Components/Education/ProfileEducation";
-
-import { useSelector } from 'react-redux';
-import axios from 'axios';
-
+import { useSelector } from "react-redux";
 const useStyles = makeStyles(styles);
 
-const baseUrl = "https://hackerearthhackathon.herokuapp.com";
-const options = {
-  headers : {
-    "Content-Type":"application/json",
-    "Access-Control-Allow-Origin" : "*"
-  }
-};
-
 const Home_Dashboard = (props) => {
-
   const { ...rest } = props;
   const classes = useStyles();
-  const loginState = useSelector(state=>state.login);
-  
-  const user_data = useSelector(state=>state.login)
-  const profileWorkEx = user_data.user.data.workex;
-  const data = user_data.user.data.projects;
-  const achievements = user_data.user.data.achievements;
-  const education = user_data.user.data.education;
-  const profileSkills = user_data.user.data.skills;
-  const profileInfo = {
-    name: user_data.user.data.name,
-    linkedin: user_data.user.data.linkedin,
-    github: user_data.user.data.github,
-    bio: user_data.user.data.bio      
-  };  
+  const loginState = useSelector((state) => state.login);
+  console.log(loginState);
+  const achievements = loginState.user.data.achievements;
+  const data = loginState.user.data.projects;
 
   const [projectData, setProjectData] = useState(data);
-  const [skilsData, setSkillsData] = useState(profileSkills);
-  const [workexData,setWorkexData] = useState(profileWorkEx);
-  const [achievementData,setAchievementData] = useState(achievements);
-  const [loading,setLoading] = useState(false);
-  // const [educationData, setEducationData] = useState(education);
 
+  const skills = loginState.user.data.skills;
+  const education = loginState.user.data.education;
+  const [skilsData, setSkillsData] = useState(skills);
+  const [educationData, setEducationData] = useState(education);
   //Funtions in this page
-
-  // WORK EXPERIENCE
-  const [WorkExModalOpen, UpdateWorkExModal] = useState(false);
-
-  const handleAddWorkEx = () => UpdateWorkExModal(true);
-  const closeWorkExModal = (value) => {    
-    setLoading(true);
-    const data = {
-      id : loginState.user.data._id,
-      data : value,
-      type : 2
-    }
-    
-    axios.post(baseUrl + "/add", data, options)
-      .then(res=>{
-          const id = res.data.id;
-          value.id = id;
-          setWorkexData(prevState=>[ value, ...prevState ]);
-          setLoading(false);
-          UpdateWorkExModal(false);          
-      });    
+  const handleAddProject = () => {
+    const object = {
+      id: 4,
+      name: "Gaming PUBG",
+      technologies_used: "C++,JS",
+      description:
+        "While this link may answer the question, it is better to include the essential parts of the answer here and provide the link for reference. Link-only answers can become invalid if the linked page changes..",
+      link: "",
+    };
+    setProjectData((oldProjectData) => [object, ...oldProjectData]);
   };
-  const cancelWorkModal = () => UpdateWorkExModal(false); 
-  const handleWorkexDelete = (id) => {
-    
-    const data = {
-      user_id : loginState.user.data._id,
-      id : id,    
-      type : 2
-    }
 
-    console.log(data);
-    axios.post(baseUrl + "/delete", data, options)
-      .then(res=>{
-          if(res.data.msg===100){
-            const object = workexData.filter((obj) => obj.id !== id);
-            setWorkexData(object);            
-          }          
-      });
-  };  
-
-
-
-  // PROJECTS
-  const [ProjectModalOpen, UpdateProjectModal] = useState(false);
-  const openAddProject = () =>  UpdateProjectModal(true);
-  
-  const closeProjectModal = (value) => {
-
-    setLoading(true);
-    const data = {
-      id : loginState.user.data._id,
-      data : value,
-      type : 0
-    }   
-    
-    axios.post(baseUrl + "/add", data, options)
-      .then(res=>{
-          const id = res.data.id;
-          value.id = id;
-          setProjectData(prevState=>[ value, ...prevState ]);
-          setLoading(false);
-          UpdateProjectModal(false);          
-      });       
-  };
-  const cancelProjectModal = () => UpdateProjectModal(false);
   const handleProjectDelete = (id) => {
-    
-    const data = {
-      user_id : loginState.user.data._id,
-      id : id,    
-      type : 0
-    }
-
-    console.log(data);
-    axios.post(baseUrl + "/delete", data, options)
-      .then(res=>{
-          if(res.data.msg==100){
-            const object = projectData.filter((obj) => obj.id !== id);
-            setProjectData(object);            
-          }          
-      });
-  };  
-  
-   
-
-
-  // ACHIEVEMENTS
-  const [AchievementsModalOpen, UpdateAchievementsModal] = useState(false);
-  const openAddAchievements = () => UpdateAchievementsModal(true);
-
-  const closeAchievementsModal = (value) => {
-
-    setLoading(true);
-    const data = {
-      id : loginState.user.data._id,
-      data : value,
-      type : 1
-    }   
-    
-    axios.post(baseUrl + "/add", data, options)
-      .then(res=>{
-          const id = res.data.id;
-          value.id = id;
-          setAchievementData(prevState=>[ value, ...prevState ]);
-          setLoading(false);
-          UpdateAchievementsModal(false);          
-      });       
-    
+    const object = projectData.filter((obj) => obj.id !== id);
+    setProjectData(object);
   };
-  
-  const cancelAchievementModal = () => UpdateAchievementsModal(false);
-  const handleAchievementDelete = (id) => {
-    
-    const data = {
-      user_id : loginState.user.data._id,
-      id : id,    
-      type : 1
-    }
 
-    console.log(data);
-    axios.post(baseUrl + "/delete", data, options)
-      .then(res=>{
-          if(res.data.msg==100){
-            const object = projectData.filter((obj) => obj.id !== id);
-            setAchievementData(object);            
-          }          
-      });
-  };  
+  const profileInfo = {
+    name: loginState.user.data.name,
+    linkedin: loginState.user.data.linkedin
+      ? loginState.user.data.linkedin
+      : "",
+    github: loginState.user.data.github ? loginState.user.data.skills : "",
+    bio: loginState.user.data.bio,
+  };
+  const profileSkills = skills;
+  const profileWorkEx = loginState.user.data.workex;
+  // const [WorkEx, handleAddWorkEx] = useState(profileWorkEx);
 
-  //Skills
-  const [skillsModal, UpdateSkillsModal] = useState(false);
-  const openSkillsModal = () => UpdateSkillsModal(true);
+  const [WorkExModalOpen, UpdateWorkExModal] = useState(false);
+  const handleAddWorkEx = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateWorkExModal(true);
+  };
+  const closeWorkExModal = () => {
+    UpdateWorkExModal(false);
+  };
 
-  const closeSkillsModal = (value) =>{
-    
-    setLoading(true);
-    const data = {
-      id : loginState.user.data._id,
-      skills : value,      
-    }   
-    
-    axios.post(baseUrl + "/skills", data, options)
-      .then(res=>{
-          if(res.data.msg=100){
-            setSkillsData(value);
-            setLoading(false);
-            UpdateSkillsModal(false);
-          }          
-      }); 
-    
-  } 
+  const [AchievementsModalOpen, UpdateAchievementsModal] = useState(false);
+  const openAddAchievements = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateAchievementsModal(true);
+  };
+  const closeAchievementsModal = () => {
+    UpdateAchievementsModal(false);
+  };
 
+  const [ProjectModalOpen, UpdateProjectModal] = useState(false);
+  const openAddProject = () => {
+    console.log("clicked");
+    // <WorkEx />;UpdateWorkExModal
+    UpdateProjectModal(true);
+  };
+  const closeProjectModal = () => {
+    UpdateProjectModal(false);
+  };
+
+  console.log(profileWorkEx);
   return (
-    <div >
+    <div>
       <Header
         brand="Welcome to Recruit-a-thon"
         rightLinks={<HeaderLinks />}
@@ -220,12 +108,12 @@ const Home_Dashboard = (props) => {
         color="black"
         {...rest}
       />
-      <div className={classes.pageHeader}  >
+      <div className={classes.pageHeader}>
         <div
-          style={{ flexGrow: "1", width: "100%", height: '100vh'  }}
+          style={{ flexGrow: "1", width: "100%" }}
           className={classes.container}
         >
-          <Grid container xs={12} lg={12} sm={12} direction="row" style={{background : "#eee"}}  >
+          <Grid container xs={12} lg={12} sm={12} direction="row">
             <GridItem container item lg={4} sm={12} xs={12}>
               <Grid
                 spacing={3}
@@ -235,20 +123,16 @@ const Home_Dashboard = (props) => {
                 lg={12}
                 sm={12}
               >
-                <GridItem style={{ background: "#fff", marginLeft :20 }}>                  
+                <GridItem style={{ background: "#fff" }}>
+                  {" "}
                   <AboutMe data={profileInfo} />
                 </GridItem>
-                <GridItem style={{ background: "#fff", marginLeft: 20, marginTop : 20 }}>                  
-                  <ProfileSkills 
-                    open = {skillsModal}
-                    handleEdit = {openSkillsModal}
-                    close = {closeSkillsModal}
-                    data={skilsData} 
-                    classes={classes}
-                     
-                  />
+                <GridItem style={{ background: "#fff", marginTop: 10 }}>
+                  {" "}
+                  <ProfileSkills data={profileSkills} />
                 </GridItem>
-                <GridItem style={{ background: "#fff", marginLeft: 20, marginTop : 20 }}>                  
+                <GridItem style={{ background: "#fff", marginTop: 10 }}>
+                  {" "}
                   <ProfileEducation data={education} />
                 </GridItem>
               </Grid>
@@ -281,6 +165,9 @@ const Home_Dashboard = (props) => {
                       padding: 10,
                       paddingLeft: 25,
                       marginTop: 10,
+
+                      // border: "2px solid red",
+                      // border: "2px solid red",
                     }}
                   >
                     <p style={{ fontSize: 25, fontWeight: "bolder" }}>
@@ -288,10 +175,9 @@ const Home_Dashboard = (props) => {
                     </p>
                     <WorkExModal
                       classes={classes}
+                      data={profileWorkEx}
                       open={WorkExModalOpen}
                       close={closeWorkExModal}
-                      cancel = {cancelWorkModal}
-                      loading = {loading}
                     />
                   </GridItem>
                   <GridItem
@@ -303,6 +189,7 @@ const Home_Dashboard = (props) => {
                       padding: 10,
                       marginTop: 10,
                       maxHeight: 40,
+                      // border: "2px solid red",
                     }}
                   >
                     <Button
@@ -311,30 +198,27 @@ const Home_Dashboard = (props) => {
                       onClick={handleAddWorkEx}
                       style={{ height: 30 }}
                     >
-                      Add New Work Experience                      
+                      Add New Work Experience
+                      {/* <WorkExModal /> */}
                     </Button>
                   </GridItem>
-                  
-                  <WorkEx 
-                    data={workexData} 
-                    classes={classes} 
-                    handleDelete={(e, id) => handleWorkexDelete(e, id)}
-                    />
-
-                  {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Projects ********************** */}
+                  <WorkEx data={profileWorkEx} classes={classes} />
+                  {/* <WorkExModal data={profileWorkEx} classes={classes} /> */}
+                  {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Projects ******** */}
 
                   <Grid
                     container
                     direction="row"
                     xs={12}
                     lg={12}
-                    sm={12}                    
+                    sm={12}
+                    style={{ marginTop: 20 }}
                   >
                     <GridItem
                       container
                       item
                       lg={6}
-                      style={{ paddingLeft: 25 }}
+                      style={{ padding: 10, paddingLeft: 25 }}
                       alignItems="center"
                     >
                       <p style={{ fontSize: 25, fontWeight: "bolder" }}>
@@ -344,8 +228,6 @@ const Home_Dashboard = (props) => {
                         classes={classes}
                         open={ProjectModalOpen}
                         close={closeProjectModal}
-                        cancel ={cancelProjectModal}
-                        loading = {loading}
                       />
                     </GridItem>
                     <GridItem
@@ -354,7 +236,7 @@ const Home_Dashboard = (props) => {
                       lg={6}
                       justify="flex-end"
                       alignItems="center"
-                      style={{ padding: 5, marginBottom: 10 }}
+                      style={{ padding: 10, marginBottom: 10 }}
                     >
                       <Button
                         variant="contained"
@@ -371,7 +253,7 @@ const Home_Dashboard = (props) => {
                       handleDelete={(e, id) => handleProjectDelete(e, id)}
                     ></Project>
                   </Grid>
-                  {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Project end @@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+                  {/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Project end @@@@@@@@@@@@@@@@@@@@@@@@@@@/}
 
                   {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Achievements@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
 
@@ -380,13 +262,14 @@ const Home_Dashboard = (props) => {
                     direction="row"
                     xs={12}
                     lg={12}
-                    sm={12}                    
+                    sm={12}
+                    style={{ marginTop: 20 }}
                   >
                     <GridItem
                       container
                       item
                       lg={6}
-                      style={{ paddingLeft: 25 }}
+                      style={{ padding: 10, paddingLeft: 25 }}
                       alignItems="center"
                     >
                       <p style={{ fontSize: 25, fontWeight: "bolder" }}>
@@ -396,8 +279,6 @@ const Home_Dashboard = (props) => {
                         classes={classes}
                         open={AchievementsModalOpen}
                         close={closeAchievementsModal}
-                        cancel ={cancelAchievementModal}
-                        loading = {loading}
                       />
                     </GridItem>
                     <GridItem
@@ -406,7 +287,7 @@ const Home_Dashboard = (props) => {
                       lg={6}
                       justify="flex-end"
                       alignItems="center"
-                      style={{ padding: 5, marginBottom: 10 }}
+                      style={{ padding: 10, marginBottom: 10 }}
                     >
                       <Button
                         variant="contained"
@@ -419,8 +300,8 @@ const Home_Dashboard = (props) => {
 
                     <ProfileAchievements
                       classes={classes}
-                      data={achievementData}
-                      handleDelete={(e, id) => handleAchievementDelete(e, id)}
+                      data={achievements}
+                      handleDelete={(e, id) => handleProjectDelete(e, id)}
                     ></ProfileAchievements>
                   </Grid>
                 </Grid>

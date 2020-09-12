@@ -7,33 +7,18 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useSelector } from "react-redux";
 import { preProcessFile } from "typescript";
 
-const ProjectModal = (props) => {
+const SkillsModal = (props) => {
   
   const loginState = useSelector(state=>state.login)
   const skills = loginState.user.skills[0].skills;
 
-  const [state,handleState] = useState({
-    name : "",
-    description : "",
-    link : "",    
-  })
-
-  const handleChange = ( e) => {
-    const {name,value} = e.target;
-    handleState(prevState=>({
-      ...prevState,
-      [name] : value
-    }))
-  } 
-
-  const [techStack, handleTechStack] = useState([]);
+  const [techStack, handleTechStack] = useState(props.data);
 
   const handleTechStackChange = (val) => {
     handleTechStack(val);
   }
-  const handleSubmit = () =>{
-    state.techstack = techStack;
-    props.close(state);
+  const handleSubmit = () =>{    
+    props.close(techStack);
   }
 
   const gridItemStyles = {
@@ -76,39 +61,10 @@ const ProjectModal = (props) => {
             }}
           >
             <GridItem style={gridItemStyles} container item lg={6}>
-              <h2>Add Project</h2>
+              <h2>Update Skills</h2>
             </GridItem>
 
-            <GridItem style={gridItemStyles} container item lg={10}>              
-              <GridItem style={gridItemStyles} container item lg={12} >
-               <TextField
-                  id="outlined-multiline-static"
-                  name = "name"
-                  label="Project Title"                             
-                  placeholder="Project Title"
-                  variant="outlined"
-                  autoComplete="off"
-                  value = { state.name }
-                  style = {{ width: "100%" }}
-                  onChange = { handleChange }
-                />
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={12}>
-              <TextField
-                  id="outlined-multiline-static"
-                  name = "description"
-                  label="Project Description"
-                  multiline
-                  rows={4}
-                  style={{ width: "100%" }}
-                  placeholder="Tell us something about your project"
-                  variant="outlined"
-                  autoComplete="off"         
-                  value={state.description}   
-                  onChange= {handleChange}
-                />
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={12}>
+            <GridItem style={gridItemStyles} container item lg={12}>
               <Autocomplete
                   multiple
                   id="size-small-outlined-multi"
@@ -127,19 +83,7 @@ const ProjectModal = (props) => {
                     />
                   )}
                 />
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={12}>
-                 <TextField            
-                    id="link"
-                    name="link"
-                    label="Project Link"
-                    fullWidth
-                    autoComplete="off"
-                    value={state.link}
-                    onChange= {handleChange}
-                  />
-              </GridItem>
-            </GridItem>           
+              </GridItem>          
 
             <GridItem
               justifyContent="center"
@@ -171,13 +115,13 @@ const ProjectModal = (props) => {
                 </GridItem>
 
                 <GridItem container item lg={6} sm={12} xs={12}>
-                  <Button
-                    disabled={props.loading}
+                  <Button           
+                  disabled={props.loading}         
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
                   >
-                    {props.loading ? "Adding Project..." : "Add Project" }
+                    {props.loading ? "Updating Skills..." : "Update Skills" }
                   </Button>
                 </GridItem>
               </Grid>
@@ -189,4 +133,4 @@ const ProjectModal = (props) => {
   );
 };
 
-export default ProjectModal;
+export default SkillsModal;

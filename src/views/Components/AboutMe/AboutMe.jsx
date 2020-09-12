@@ -3,21 +3,23 @@ import GridItem from "components/Grid/GridItem.js";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import LinkedInIcon from "@material-ui/icons/LinkedIn";
-import { Grid, Paper, Button } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
+
 const AboutMe = (props) => {
+
   const styles = {
     fontFamily: "Arial",
     fontSize: "1em",
   };
+  
   return (
-    // <div>
     <GridItem
       item
+      direction= "column"
       lg={12}
       xs={12}
       sm={12}
-      style={{ margin: 10 }}
-      // className={classes.profilePic}
+      style={{ display : "flex", justifyContent: 'center', alignItems: 'center', }}
     >
       <AccountCircleIcon
         style={{ fontSize: "21vh", marginLeft: "flex-start" }}
@@ -26,6 +28,7 @@ const AboutMe = (props) => {
       <h3>{props.data.name}</h3>
       <br />
       <p style={styles}>{props.data.bio}</p>
+      <Grid>
       <Button
         style={{ display: 1 ? "display" : "none" }}
         href={props.data.linkedin}
@@ -38,6 +41,7 @@ const AboutMe = (props) => {
       >
         <GitHubIcon />
       </Button>
+      </Grid>
     </GridItem>
     // </div>
   );

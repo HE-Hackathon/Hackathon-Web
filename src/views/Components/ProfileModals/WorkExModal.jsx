@@ -1,21 +1,42 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Grid, Paper, Button, Modal, TextField } from "@material-ui/core";
 import GridItem from "components/Grid/GridItem.js";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-
+import { DatePicker } from "@material-ui/pickers";
+import moment from 'moment';
 const WorkExModal = (props) => {
-  const inputStyles = {
-    // borderRadius: "35px",
-    // margin: 10,
-    // padding: 10,
-    width: "90%",
-    height: 35,
+  
+  const gridItemStyles = {
+    margin: 10,
   };
 
-  const gridItemStyles = {
-    margin: 5,
-  };
+  const [state, handleState] = useState({
+    company_name: "",
+    position: "",
+    description: "",
+  })
+
+  const [start_year,handleStart] = useState(moment(new Date()).format());
+  const [end_year,handleEnd] = useState(moment(new Date()).format());
+
+
+  const handleChange = ( e ) => {
+    const {name,value} = e.target;
+    handleState(prevState=>({
+      ...prevState,
+      [name] : value,
+    }))
+  }
+
+  const handleStartDate = (value) => handleStart(value);
+  const handleEndDate = (value) => handleEnd(value);
+
+  const handleSubmit = () => {
+    state.start_year = start_year;
+    state.end_year = end_year;
+    props.close(state);
+  }
   return (
     <div>
       <Modal
@@ -30,12 +51,10 @@ const WorkExModal = (props) => {
         BackdropProps={{
           timeout: 500,
         }}
-        style={{
-          width: "60%",
+        style={{          
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          marginLeft: "20rem",
+          alignItems: "center",          
           marginTop: "auto",
         }}
       >
@@ -43,73 +62,87 @@ const WorkExModal = (props) => {
           <Grid
             container
             direction="row"
+            lg={5}
+            xs={5}
+            sm={5}
             style={{
               background: "white",
               borderRadius: "3px",
               height: "auto",
               padding: 10,
+              display : 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <h1>Add New Work Experience</h1>
-            </GridItem>
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>Company Name: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                <input style={inputStyles} type="text" name="Company" />
-              </GridItem>
+            <GridItem style={{ display : 'flex', justifyContent: 'center', alignItems: 'center'}}  container item lg={10}>
+              <h2>Add New Work Experience</h2>
             </GridItem>
 
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>Position: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                <input style={inputStyles} type="text" name="Position" />
-              </GridItem>
-            </GridItem>
-
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>Start Year: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Addd Year@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-                <input style={inputStyles} type="text" name="startYear" />{" "}
-                {/* Add type as year */}
-              </GridItem>
-            </GridItem>
-
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>End Year: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Addd Year@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-                <input style={inputStyles} type="text" name="endYear" />{" "}
-                {/* Add type as year */}
-              </GridItem>
-            </GridItem>
-
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>Description: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                <TextField
-                  id="outlined-multiline-static"
-                  label="Description"
-                  multiline
-                  rows={4}
-                  style={{ width: "100%" }}
-                  placeholder="Tell us something about work"
+            <GridItem style={gridItemStyles} container item lg={10}>              
+              <GridItem style={gridItemStyles} container item lg={12}>
+              <TextField
+                  required
+                  id="name"
+                  name="company_name"
+                  label="Company Name"
                   variant="outlined"
+                  value={state.company_name}
+                  onChange= {handleChange}            
+                  fullWidth
                   autoComplete="off"
                 />
               </GridItem>
+            
+            <GridItem style={gridItemStyles} container item lg={12}>
+            <TextField
+              required
+              id="position"
+              name="position"
+              variant="outlined"
+              value={state.position}
+              onChange= {handleChange}            
+              label="Position"
+              fullWidth
+              autoComplete="off"
+            />
             </GridItem>
+            <GridItem style={gridItemStyles} container item lg={12}>
+            <TextField
+                id="outlined-multiline-static"
+                name = "description"
+                label="Work Experience Description"
+                multiline
+                rows={4}
+                style={{ width: "100%" }}
+                placeholder="Tell us something about your work experience"
+                variant="outlined"
+                autoComplete="off"            
+                onChange= {handleChange}        
+                value={state.description}    
+              />
+            </GridItem>
+            <GridItem style={gridItemStyles} container item lg={12}>
+            <DatePicker
+              views={["year"]}
+              label="Start Year"
+              variant="outlined"
+              value={start_year}
+              onChange={handleStartDate}
+              fullWidth
+            />
+            </GridItem>
+            <GridItem style={gridItemStyles} container item lg={12}>
+            <DatePicker
+                views={["year"]}
+                label="End Year"
+                variant="outlined"
+                value={end_year}
+                onChange={handleEndDate}
+                fullWidth
+              />
+            </GridItem>
+          </GridItem>
 
             <GridItem
               justifyContent="center"
@@ -135,19 +168,19 @@ const WorkExModal = (props) => {
                   sm={12}
                   xs={12}
                 >
-                  <Button variant="contained" onClick={props.close}>
+                  <Button disabled={props.loading} variant="contained" onClick={props.cancel}>
                     Cancel
                   </Button>
                 </GridItem>
 
                 <GridItem container item lg={6} sm={12} xs={12}>
                   <Button
-                    // style={{ margin: "auto" }}
+                    disabled={props.loading}
                     variant="contained"
                     color="primary"
-                    onClick={props.close}
+                    onClick={handleSubmit}
                   >
-                    Add Work Experience
+                    { props.loading ? "Adding Work Experience..." :  "Add Work Experience" }
                   </Button>
                 </GridItem>
               </Grid>

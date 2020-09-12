@@ -1,21 +1,34 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Grid, Paper, Button, Modal, TextField } from "@material-ui/core";
 import GridItem from "components/Grid/GridItem.js";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 
 const AchievementsModal = (props) => {
-  const inputStyles = {
-    // borderRadius: "35px",
-    // margin: 10,
-    // padding: 10,
-    width: "90%",
-    height: 35,
+  
+  const gridItemStyles = {
+    margin: 10,
   };
 
-  const gridItemStyles = {
-    margin: 5,
-  };
+  const [state, handleState] = useState({
+    name: "",
+    description: "",
+  })
+
+  const handleChange = (e)=> {
+    const {name,value} = e.target;
+    handleState(prevState=>({
+      ...prevState,
+      [name] : value
+    }))
+  }
+
+  const handleSubmit = () => {
+    props.close(state);
+  }
+
+
+
   return (
     <div>
       <Modal
@@ -30,12 +43,10 @@ const AchievementsModal = (props) => {
         BackdropProps={{
           timeout: 500,
         }}
-        style={{
-          width: "60%",
+        style={{          
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          marginLeft: "20rem",
+          alignItems: "center",          
           marginTop: "auto",
         }}
       >
@@ -43,43 +54,53 @@ const AchievementsModal = (props) => {
           <Grid
             container
             direction="row"
+            lg={5}
+            xs={5}
+            sm={5}
             style={{
               background: "white",
               borderRadius: "3px",
               height: "auto",
               padding: 10,
+              display : 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <h1>Add New Achievement</h1>
+            <GridItem style={{ display : 'flex', justifyContent: 'center', alignItems: 'center'}}  container item lg={10}>
+              <h2>Add New Achievement</h2>
             </GridItem>
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4> Name: </h4>
+            <GridItem style={gridItemStyles} container item lg={10}>              
+              <GridItem style={gridItemStyles} container item lg={12}>
+              <TextField
+                  required
+                  id="name"
+                  name="name"
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  autoComplete="off"
+                  value={state.name}
+                  onChange={handleChange}
+                />
               </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                <input style={inputStyles} type="text" name="Company" />
-              </GridItem>
-            </GridItem>
-
-            <GridItem style={gridItemStyles} container item lg={12}>
-              <GridItem container item lg={4}>
-                <h4>Description: </h4>
-              </GridItem>
-              <GridItem style={gridItemStyles} container item lg={7}>
-                <TextField
+              <GridItem style={gridItemStyles} container item lg={12}>
+              <TextField
                   id="outlined-multiline-static"
-                  label="Description"
+                  name = "description"
+                  label="Achievement Description"
                   multiline
                   rows={4}
                   style={{ width: "100%" }}
-                  placeholder="Tell us ur achievement"
+                  placeholder="Tell us something about your best achievement"
                   variant="outlined"
-                  autoComplete="off"
+                  autoComplete="off"   
+                  value={state.description}
+                  onChange={handleChange}         
                 />
               </GridItem>
             </GridItem>
-
+           
             <GridItem
               justifyContent="center"
               style={gridItemStyles}
@@ -104,19 +125,19 @@ const AchievementsModal = (props) => {
                   sm={12}
                   xs={12}
                 >
-                  <Button variant="contained" onClick={props.close}>
+                  <Button disabled={props.loading} variant="contained" onClick={props.cancel}>
                     Cancel
                   </Button>
                 </GridItem>
 
                 <GridItem container item lg={6} sm={12} xs={12}>
                   <Button
-                    // style={{ margin: "auto" }}
+                    disabled={props.loading}
                     variant="contained"
                     color="primary"
-                    onClick={props.close}
+                    onClick={handleSubmit}
                   >
-                    Add Achievement
+                    {props.loading ? "Adding Achievement...": "Add Achievement"}
                   </Button>
                 </GridItem>
               </Grid>

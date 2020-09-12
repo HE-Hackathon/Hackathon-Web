@@ -5,21 +5,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { TextField } from '@material-ui/core';
+import { DatePicker } from '@material-ui/pickers';
 
-const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -33,52 +22,75 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Review() {
+export default function Review(props) {
   const classes = useStyles();
+  const { handleWorkDetails, state } = props;
+  const handleWork = (e) => handleWorkDetails(e)
+  const handleStartDate = (val) => props.handleWorkStartDateChange(val)
+  const handleEndDate = (val) => props.handleWorkEndDateChange(val)
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Order summary
-      </Typography>
-      <List disablePadding>
-        {products.map((product) => (
-          <ListItem className={classes.listItem} key={product.name}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
-          </ListItem>
-        ))}
-        <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" className={classes.total}>
-            $34.06
-          </Typography>
-        </ListItem>
-      </List>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
-          </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
+      <Typography variant="h6" gutterBottom >
+        Work Experience (if any)
+      </Typography>     
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6} style={{ marginTop: 10 }}>
+          <TextField
+            required
+            id="name"
+            name="company_name"
+            label="Company Name"
+            value={state.workex.company_name}
+            onChange= {handleWork}            
+            fullWidth
+            autoComplete="off"
+          />
         </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
-          </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
-          </Grid>
+        <Grid item xs={12} md={6} style={{ marginTop: 10 }}>
+          <TextField
+            required
+            id="position"
+            name="position"
+            value={state.workex.position}
+            onChange= {handleWork}            
+            label="Position"
+            fullWidth
+            autoComplete="off"
+          />
+        </Grid>
+        <Grid item xs={12} lg={12} style={{ marginTop: 10 }}>
+          <TextField
+            id="outlined-multiline-static"
+            name = "description"
+            label="Work Experience Description"
+            multiline
+            rows={4}
+            style={{ width: "100%" }}
+            placeholder="Tell us something about your work experience"
+            variant="outlined"
+            autoComplete="off"            
+            onChange= {handleWork}        
+            value={state.workex.description}    
+          />
+        </Grid>       
+        <Grid item xs={12} sm={6} style={{ marginTop : 15 }}>
+          <DatePicker
+            views={["year"]}
+            label="Start Year"
+            value={state.workex.start_year}
+            onChange={handleStartDate}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} style={{ marginTop : 15 }}>
+          <DatePicker
+            views={["year"]}
+            label="End Year"
+            value={state.workex.end_year}
+            onChange={handleEndDate}
+            fullWidth
+          />
         </Grid>
       </Grid>
     </React.Fragment>
