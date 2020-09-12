@@ -17,7 +17,16 @@ const createProfile = "/sub_profile"
 const useStyles = makeStyles(styles);
 
 const Login_CreateProfile = (props) => {
-  
+
+
+  const loginState = useSelector(state=>state.login).user.data;
+  const emailCheck =  localStorage.getItem('email');
+
+  if( loginState === undefined && emailCheck === null ){
+    props.history.push("/");
+    window.location.reload();
+  }
+
   const { ...rest } = props;
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);  
@@ -196,6 +205,7 @@ const Login_CreateProfile = (props) => {
     }))
   }
   const user_data = useSelector(state=>state.login);
+
   const skills = user_data.user.skills[0].skills;
   const handleSubmit = () => {
     

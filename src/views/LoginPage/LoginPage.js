@@ -106,7 +106,8 @@ export default function LoginPage(props) {
           if(datares.value===200){
             if(datares.data.isVerified === false ){
               alert('Please Verify Your Account');
-            }else{                
+            }else{       
+              localStorage.setItem('isLogin',1);         
               if(datares.isRecruiter){                             
                 props.history.push('/rdashboard');
               }else{

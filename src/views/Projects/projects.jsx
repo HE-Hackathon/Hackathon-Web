@@ -9,8 +9,10 @@ import GridItem from "components/Grid/GridItem.js";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Grid, Button, Tooltip } from "@material-ui/core";
 import LinkIcon from '@material-ui/icons/Link';
+import { useSelector } from "react-redux";
 
 const Project = (props) => {
+  const isRecruiter = useSelector(state=>state.login).user.isRecruiter
 
   const styles = {
     fontFamily: "Times New Roman",
@@ -28,6 +30,7 @@ const Project = (props) => {
           <Card key={value.id} className={classes.root} style={{ padding: 10 }}>
             <CardHeader
               action={
+                isRecruiter ? "":
                 <Tooltip title="Delete Project">
                 <DeleteIcon 
                     onClick = { () => props.handleDelete(value.id) }  

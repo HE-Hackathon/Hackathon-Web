@@ -7,6 +7,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
 import moment from 'moment';
 import { Grid, Tooltip } from "@material-ui/core";
+import { useSelector } from "react-redux";
+
 const WorkEx = (props) => {
 
   const styles = {
@@ -15,6 +17,7 @@ const WorkEx = (props) => {
     margin: 10,
     width : "100%"
   };
+  const isRecruiter = useSelector(state=>state.login).user.isRecruiter
 
   const classes = props.classes;
   return (
@@ -24,11 +27,12 @@ const WorkEx = (props) => {
           <Card className={classes.root} style={{ padding: 10 }}>
             <CardHeader
               action={
+                isRecruiter ? " " :
                 <Tooltip title="Delete Work Experience">
-                <DeleteIcon
-                  onClick = { () => props.handleDelete(value.id) }                   
-                  style={{ marginRight: 5, cursor : "pointer" }}                  
-                ></DeleteIcon>
+                  <DeleteIcon
+                    onClick = { () => props.handleDelete(value.id) }                   
+                    style={{ marginRight: 5, cursor : "pointer" }}                  
+                  ></DeleteIcon>
                 </Tooltip>
               }
               title={value.position}

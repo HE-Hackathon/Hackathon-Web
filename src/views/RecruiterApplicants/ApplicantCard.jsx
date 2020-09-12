@@ -3,14 +3,16 @@ import GridItem from "components/Grid/GridItem.js";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Grid, Paper } from "@material-ui/core";
-import CardMedia from "@material-ui/core/CardMedia";
+import { Doughnut } from 'react-chartjs-2';
 
 const ApplicantCard = (props) => {
+  
   console.log(props);
+  const path = props.path;
+  
   return (
     <Grid
       style={{ padding: 10 }}
@@ -24,37 +26,46 @@ const ApplicantCard = (props) => {
         <GridItem
           container
           item
-          lg={3}
-          sm={12}
-          xs={12}
-          style={{ textAlign: "center", justifyContent: "center" }}
+          lg={2}
+          sm={2}
+          xs={2}
+          style={{ textAlign: "center", justifyContent: "center", margin : 20, shadowColor: '1px 1px black', }}
         >
           <Card className={props.classes.root}>
             <CardHeader title={value.name} />
+              <small>{value.email}</small>
+            <CardContent> 
+            <Grid style={{ marginBottom :20 }}>
 
-            <CardContent>
-              <CardMedia
-                className={props.classes.media}
-                component="img"
-                image="@/src/assets/img/bg.jpg"
-                title="Skills Match"
-                height="150"
-              />
-              <Typography
-                variant="body2"
-                color="black"
-                component="p"
-                alignItems="center"
-              >
-                <br />
-                {value.percentMatch > "50%" ? (
-                  <p style={{ color: "green" }}>
-                    Percent Match: {value.matched}
+              {path === "/viewdevelopers" ? 
+                <div>
+                  <p>
+                    <b>Skillset : {value.skills.join(" | ")}</b>
                   </p>
-                ) : (
-                  <p style={{ color: "red" }}>Percent Match: {value.matched}</p>
-                )}
-              </Typography>
+                </div>
+                  :   
+              <Doughnut data = {
+                  {
+                    labels: [
+                      'Skills Matched (%)',
+                      'Skills Unmatched (%)',          
+                    ],
+                    datasets: [{
+                      data: [ parseInt(value.matched) , parseInt(100- value.matched) ],
+                      backgroundColor: [
+                      '#1F8B1F',
+                      '#eee',      
+                      ],
+                      hoverBackgroundColor: [
+                      '#1F8B1F',
+                      '#eee',      
+                      ]
+                    }]
+                  }
+              } 
+             height = {200} width = {200} />
+            }
+             </Grid>
               <Button                
                 variant="contained"
                 color="primary"

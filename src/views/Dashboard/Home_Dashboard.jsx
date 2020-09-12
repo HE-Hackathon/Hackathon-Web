@@ -32,6 +32,13 @@ const options = {
 };
 
 const Home_Dashboard = (props) => {
+  const login = useSelector(state=>state.login).user.data;
+  const emailCheck =  localStorage.getItem('email');
+
+  if( login === undefined && emailCheck === null ){
+    props.history.push("/");
+    window.location.reload();
+  }
 
   const { ...rest } = props;
   const classes = useStyles();
@@ -54,6 +61,7 @@ const Home_Dashboard = (props) => {
   const [skilsData, setSkillsData] = useState(profileSkills);
   const [workexData,setWorkexData] = useState(profileWorkEx);
   const [achievementData,setAchievementData] = useState(achievements);
+  const [educationData, setEducationData] = useState(education);
   const [loading,setLoading] = useState(false);
   // const [educationData, setEducationData] = useState(education);
 
@@ -191,7 +199,7 @@ const Home_Dashboard = (props) => {
   //Skills
   const [skillsModal, UpdateSkillsModal] = useState(false);
   const openSkillsModal = () => UpdateSkillsModal(true);
-
+  const cancelSkillsModal = () => UpdateSkillsModal(false);
   const closeSkillsModal = (value) =>{
     
     setLoading(true);
@@ -211,15 +219,30 @@ const Home_Dashboard = (props) => {
     
   } 
 
+
+  //Education
+  const [EducationModal, UpdateEducationModal] = useState(false);
+  const openEducationModal = () => UpdateEducationModal(true);
+
+  const closeEducationModal = (value) => {
+    // setLoading(true);
+    const data = {
+      user_id: loginState.user.data._id,
+      data: value,
+      type: 3,
+    };
+    console.log(data);
+    axios.post(baseUrl + "/edit", data, options).then((res) => {
+      if ((res.data.msg = 100)) {
+        setEducationData([value]);
+        setLoading(false);
+        UpdateEducationModal(false);
+      }
+    });
+  };
+
   return (
     <div >
-      <Header
-        brand="Welcome to Recruit-a-thon"
-        rightLinks={<HeaderLinks />}
-        fixed
-        color="black"
-        {...rest}
-      />
       <div className={classes.pageHeader}  >
         <div
           style={{ flexGrow: "1", width: "100%", height: '100vh'  }}
@@ -245,11 +268,18 @@ const Home_Dashboard = (props) => {
                     close = {closeSkillsModal}
                     data={skilsData} 
                     classes={classes}
+                    cancel={cancelSkillsModal}
                      
                   />
                 </GridItem>
                 <GridItem style={{ background: "#fff", marginLeft: 20, marginTop : 20 }}>                  
-                  <ProfileEducation data={education} />
+                <ProfileEducation
+                    data={educationData}
+                    open={EducationModal}
+                    close={closeEducationModal}
+                    handleEdit={openEducationModal}
+                    classes={classes}
+                  />
                 </GridItem>
               </Grid>
             </GridItem>

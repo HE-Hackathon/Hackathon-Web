@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Header from "components/Header/Header";
@@ -18,10 +18,12 @@ import ProfileEducation from "../Components/Education/ProfileEducation";
 
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import Loading from "views/Components/Loading/Loading";
 
 const useStyles = makeStyles(styles);
 
 const baseUrl = "https://hackerearthhackathon.herokuapp.com";
+const profile = "/profile"
 const options = {
   headers : {
     "Content-Type":"application/json",
@@ -31,28 +33,47 @@ const options = {
 
 const UserProfile = (props) => {
 
+  const login = useSelector(state=>state.login).user.data;
+  const emailCheck =  localStorage.getItem('email');
+
+  if( login === undefined && emailCheck === null ){
+    props.history.push("/");
+    window.location.reload();
+  }
+  
   const { ...rest } = props;
   const classes = useStyles();
-  
-  const loginState = useSelector(state=>state.login);
-  const user_data = useSelector(state=>state.login)
-  const profileWorkEx = user_data.user.data.workex;
-  const data = user_data.user.data.projects;
-  const achievements = user_data.user.data.achievements;
-  const education = user_data.user.data.education;
-  const profileSkills = user_data.user.data.skills;
-  const profileInfo = {
-    name: user_data.user.data.name,
-    linkedin: user_data.user.data.linkedin,
-    github: user_data.user.data.github,
-    bio: user_data.user.data.bio      
-  };  
+    
+  const user_data = useSelector(state=>state.login)  
+  const userdata = {
+    id : props.location.state.id
+  }
 
-  const [projectData, setProjectData] = useState(data);
-  const [skilsData, setSkillsData] = useState(profileSkills);
-  const [workexData,setWorkexData] = useState(profileWorkEx);
-  const [achievementData,setAchievementData] = useState(achievements);
-  const [loading,setLoading] = useState(false);
+  const [data, handleData] = useState([{}]);
+  const [loading,handleLoading] = useState(true);
+  useEffect(()=>{
+    const fetchData = async() =>{
+      const res = await axios.post( baseUrl + profile ,userdata, options);      
+      handleData(res.data.data);
+      handleLoading(false);
+    }
+
+    fetchData();    
+  },[])
+
+
+  const workexData = data.workex;
+  const projectData = data.projects;
+  const achievementData = data.achievements;
+  const educationData = data.education;
+  const skillsData = data.skills;
+  const profileInfo = {
+    name: data.name,
+    linkedin: data.linkedin,
+    github: data.github,
+    bio: data.bio      
+  };  
+  
   
 
   //Funtions in this page
@@ -65,21 +86,21 @@ const UserProfile = (props) => {
   const handleProjectDelete = () => {}  
 
   // ACHIEVEMENTS
-  const handleAchievementDelete = (id) => {}  
+  const handleAchievementDelete = () => {}  
 
   //Skills  
   const openSkillsModal = () => {}
   const closeSkillsModal = () => {} 
 
+
+  //Education
+  
+  const openEducationModal = () => {}
+  const closeEducationModal = () => {};
+
   return (
-    <div >
-      <Header
-        brand="Welcome to Recruit-a-thon"
-        rightLinks={<HeaderLinks />}
-        fixed
-        color="black"
-        {...rest}
-      />
+    <div >   
+      {loading ? <Loading /> :  
       <div className={classes.pageHeader}  >
         <div
           style={{ flexGrow: "1", width: "100%", height: '100vh'  }}
@@ -103,13 +124,19 @@ const UserProfile = (props) => {
                     open = {false}
                     handleEdit = {openSkillsModal}
                     close = {closeSkillsModal}
-                    data={skilsData} 
+                    data={skillsData} 
                     classes={classes}
                      
                   />
                 </GridItem>
                 <GridItem style={{ background: "#fff", marginLeft: 20, marginTop : 20 }}>                  
-                  <ProfileEducation data={education} />
+                <ProfileEducation
+                    data={educationData}
+                    open={false}
+                    close={closeEducationModal}
+                    handleEdit={openEducationModal}
+                    classes={classes}
+                  />
                 </GridItem>
               </Grid>
             </GridItem>
@@ -214,6 +241,7 @@ const UserProfile = (props) => {
           </Grid>
         </div>
       </div>
+      }
     </div>
   );
 };

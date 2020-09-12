@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import GridItem from "components/Grid/GridItem.js";
 import EditIcon from "@material-ui/icons/Edit";
 import { Grid, Paper, Button } from "@material-ui/core";
+import EducationModal from "../ProfileModals/EducationModal";
+import moment from "moment";
+import { useSelector } from "react-redux";
+
 const ProfileEducation = (props) => {
+
+  const isRecruiter = useSelector(state=>state.login).user.isRecruiter;  
+
   const styles = {
     fontFamily: "Arial",
     fontSize: "1em",
@@ -12,14 +19,20 @@ const ProfileEducation = (props) => {
   console.log(props.data);
   return (
     <div>
+      <EducationModal
+        open={props.open}
+        handleEdit={props.handleEdit}
+        close={props.close}
+        cancel={props.cancel}
+        data={props.data}
+        classes={props.classes}
+      />
       <Grid direction="row" container xs={12} lg={12} sm={12} style={styles}>
         <GridItem
           container
           item
           lg={6}
-          alignItems="center"
-
-          // className={classes.profilePic}
+          alignItems="center"  
         >
           <h3>
             <b>Education</b>
@@ -32,9 +45,8 @@ const ProfileEducation = (props) => {
           alignItems="center"
           justify="flex-end"
 
-          // className={classes.profilePic}
         >
-          <EditIcon />
+          {isRecruiter ? "" : <EditIcon onClick={props.handleEdit} /> }
         </GridItem>
       </Grid>
       <Grid direction="column" container xs={12} lg={12} sm={12} style={styles}>
@@ -46,6 +58,10 @@ const ProfileEducation = (props) => {
                   <h5>{value.name}</h5>
                   <p>
                     {value.course},{value.degree}
+                  </p>
+                  <p>
+                    ( {moment(value.start_year).format("YYYY")} -
+                    {moment(value.end_year).format("YYYY")})
                   </p>
 
                   <p>Score: {value.score}</p>

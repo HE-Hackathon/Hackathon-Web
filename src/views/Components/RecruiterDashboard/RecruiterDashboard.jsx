@@ -17,6 +17,14 @@ const feedUrl = "/my_posts";
 
 const RecruiterDashboard = (props) => {
   
+  const login = useSelector(state=>state.login).user.data;
+  const emailCheck =  localStorage.getItem('email');
+
+  if( login === undefined && emailCheck === null ){
+    props.history.push("/");
+    window.location.reload();
+  }
+
   const { ...rest } = props;
   const classes = useStyles();
   const loginState = useSelector(state=>state.login);
@@ -69,9 +77,8 @@ const RecruiterDashboard = (props) => {
     let data = value;    
     data.company_name = loginState.user.data.company_name;
     data.user_id = loginState.user.data._id;
-
-    console.log(data);
-
+    data.description = data.description.replace(/(?:\r\n|\r|\n)/g, "\\n")
+   
     axios.post( baseUrl + "/post_job", data, options )
       .then(res =>{        
         setFeedData(prevState=>[res.data,...prevState]);

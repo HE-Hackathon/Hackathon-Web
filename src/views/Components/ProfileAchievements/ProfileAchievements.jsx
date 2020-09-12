@@ -6,6 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
 import { Grid, Tooltip } from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 const ProfileAchievements = (props) => {
   const styles = {
@@ -14,6 +15,8 @@ const ProfileAchievements = (props) => {
     marginLeft: 10,
     // border: "2px solid blue",
   };
+  const isRecruiter = useSelector(state=>state.login).user.isRecruiter
+
   const classes = props.classes;
   return (
     <Grid xs={12} lg={12} >
@@ -23,6 +26,7 @@ const ProfileAchievements = (props) => {
           <Card key={value.id} className={classes.root} style={{ padding: 10 }}>
           <CardHeader
               action={
+                 isRecruiter ? "" : 
                 <Tooltip title="Delete Achievement">
                 <DeleteIcon
                   onClick = { () => props.handleDelete(value.id) }                   

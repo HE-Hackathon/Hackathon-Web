@@ -5,7 +5,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Grid, Paper, Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import moment from 'moment';
 
 const RecruiterDashboardCard = (props) => {
 
@@ -20,7 +20,7 @@ const RecruiterDashboardCard = (props) => {
         <Typography className={props.classes.heading}>
           <b>Company Name:</b> {props.data.company_name} <br />
           <b>Position:</b> {props.data.position} <br />
-          <b>Deadline:</b> {props.data.deadline} <br />
+          <b>Deadline:</b> {moment(props.data.deadline).format("YYYY-MM-DD")} <br />
           <b>Created On:</b> {props.data.created_on} <br />
           <b>Number of Applicants: </b> {props.data.candidates_applied.length}
         </Typography>

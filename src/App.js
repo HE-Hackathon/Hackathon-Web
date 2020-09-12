@@ -14,6 +14,7 @@ import axios from "axios";
 import Loading from "views/Components/Loading/Loading";
 import RecruiterDashboard from "views/Components/RecruiterDashboard/RecruiterDashboard";
 import UserProfile from "views/ViewUserProfile/UserProfile";
+import ViewDevelopers from "views/ViewDevelopers/ViewDevelopers";
 import HeaderLinks from "components/Header/HeaderLinks";
 import Header from "components/Header/Header";
 
@@ -54,11 +55,13 @@ const App = () => {
   
   }, []);
   
+  const flag = localStorage.getItem('isLogin');
+
   return (    
     <Router history={hist}>      
         <Header
           brand="Welcome to Recruit-a-thon"
-          rightLinks={<HeaderLinks />}
+          rightLinks={<HeaderLinks flag={flag} />}
           fixed
           color="black"
         />
@@ -72,9 +75,9 @@ const App = () => {
             
             <Route exact path="/createprofile" component={Login_CreateProfile} />
             <Route exact path="/feed" component={DeveloperFeed} />
-            <Route exact path="/dashboard" component={Home_Dashboard} />
-            <Route exact path="/post_applicants" component={RecruiterApplicants} /> 
+            <Route exact path="/dashboard" component={Home_Dashboard} />            
             
+            <Route exact path="/viewdevelopers" component={ViewDevelopers} />          
             <Route exact path="/rdashboard" component={RecruiterDashboard} />          
             <Route exact path="/ViewApplicants" component={RecruiterApplicants}/>
             <Route exact path="/UserProfile" component={UserProfile}/>            

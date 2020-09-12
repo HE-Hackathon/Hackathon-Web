@@ -32,23 +32,30 @@ const HeaderLinks = (props) => {
   const { isCreatedProfile } = loginState.user.data || false;  
   const isRecruiter = loginState.user.isRecruiter;
   
-
   return (
-    <List className={classes.list}>      
-      
-      { 
-      
+    <List className={classes.list}>            
+      {       
         isRecruiter ? 
-
-        <ListItem className={classes.listItem}>                
+        <Fragment>
+           <ListItem className={classes.listItem}>                
             <Button
-              color="transparent"                        
-              className={classes.navLink}
-              href = '/rdashboard'
-            >
-              MY DASHBOARD
-            </Button>            
-        </ListItem>
+                color="transparent"                        
+                className={classes.navLink}
+                href = '/rdashboard'
+              >
+                MY DASHBOARD
+              </Button>            
+          </ListItem>
+            <ListItem className={classes.listItem}>                
+                <Button
+                  color="transparent"                        
+                  className={classes.navLink}
+                  href = '/viewdevelopers'
+                >
+                  VIEW DEVELOPERS
+                </Button>            
+            </ListItem>           
+      </Fragment>
         : 
   
         isCreatedProfile ?  
@@ -75,7 +82,8 @@ const HeaderLinks = (props) => {
         </ListItem> 
       </Fragment>
       : "" }
-
+  {
+    props.flag === "1" ?
         <ListItem className={classes.listItem}>
           <Link to="/">
             <Button
@@ -86,7 +94,8 @@ const HeaderLinks = (props) => {
               LOGOUT
             </Button>
             </Link>
-        </ListItem> 
+        </ListItem> : ""
+  }
     </List>
   );
 }

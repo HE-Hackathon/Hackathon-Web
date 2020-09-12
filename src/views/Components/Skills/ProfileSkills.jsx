@@ -3,8 +3,10 @@ import GridItem from "components/Grid/GridItem.js";
 import EditIcon from "@material-ui/icons/Edit";
 import { Grid, Paper, Button } from "@material-ui/core";
 import SkillsModal from "./SkillsModal";
+import { useSelector } from "react-redux";
+
 const ProfileSkills = (props) => {
-  
+  const isRecruiter = useSelector(state=>state.login).user.isRecruiter
   const styles = {
     fontFamily: "Arial",
     fontSize: "1em",
@@ -17,6 +19,7 @@ const ProfileSkills = (props) => {
           open = {props.open}
           handleEdit = {props.handleEdit}
           close = {props.close}
+          cancel={props.cancel}
           data={props.data} 
           classes={props.classes}
         />
@@ -39,7 +42,7 @@ const ProfileSkills = (props) => {
           justify="flex-end"
 
         >
-          <EditIcon onClick={props.handleEdit} />
+          { isRecruiter ?  "" : <EditIcon onClick={props.handleEdit} /> }
         </GridItem>
       </Grid>
       <Grid direction="column" container xs={12} lg={12} sm={12} style={styles}>

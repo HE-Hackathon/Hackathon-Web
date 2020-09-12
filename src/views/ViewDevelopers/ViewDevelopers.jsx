@@ -5,13 +5,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Header from "components/Header/Header";
 import HeaderLinks from "components/Header/HeaderLinks";
 import styles from "assets/jss/material-kit-react/views/homeDashboard.js";
-import ApplicantCard from "./ApplicantCard";
 import Loading from "views/Components/Loading/Loading";
 import { Grid } from "@material-ui/core";
 import GridItem from "components/Grid/GridItem";
 import { useSelector } from "react-redux";
+import ApplicantCard from "views/RecruiterApplicants/ApplicantCard";
 
-const RecruiterApplicants = (props) => {
+const ViewDevelopers = (props) => {
 
   const login = useSelector(state=>state.login).user.data;
   const emailCheck =  localStorage.getItem('email');
@@ -26,12 +26,10 @@ const RecruiterApplicants = (props) => {
   const useStyles = makeStyles(styles);
 
   const [loading, handleLoading] = useState(true);
-
   const classes = useStyles();
-  const postId = props.location.state.id;
 
   const baseUrl = "https://hackerearthhackathon.herokuapp.com";
-  const feedUrl = "/ViewApplicants/";
+  const feedUrl = "/filter";
 
   const options = {
     headers: {
@@ -42,9 +40,9 @@ const RecruiterApplicants = (props) => {
   const [data, setFeedData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(baseUrl + feedUrl + postId, options);
-      setFeedData(prevState => [ ...res.data.candidates, ...prevState  ]);
-     
+      const res = await axios.post(baseUrl + feedUrl , options);
+      
+      setFeedData(prevState => [ ...res.data.data, ...prevState  ]);
       handleLoading(false);
     };
     fetchData();
@@ -55,7 +53,8 @@ const RecruiterApplicants = (props) => {
     props.history.push("/UserProfile", { id: id });
   };
 
-  
+  const path = props.location.pathname;
+
   const styleGrid = {
     margin: 15,
     padding: 10,
@@ -85,7 +84,7 @@ const RecruiterApplicants = (props) => {
                 sm={11}
                 direction="row"
               >
-                LIST OF APPLICANTS
+                {path === "/viewdevelopers" ? "ALL DEVELOPERS" : "LIST OF APPLICANTS"}
               </Grid>
             </GridItem>
 
@@ -94,6 +93,7 @@ const RecruiterApplicants = (props) => {
                 classes={classes}
                 data={data}
                 handleClick={(e, id) => handleProfileClick(e, id)}
+                path = {path}
               />              
             </Grid>
           </GridItem>
@@ -102,5 +102,5 @@ const RecruiterApplicants = (props) => {
     </div>
   );
 };
-export default RecruiterApplicants;
+export default ViewDevelopers;
 
