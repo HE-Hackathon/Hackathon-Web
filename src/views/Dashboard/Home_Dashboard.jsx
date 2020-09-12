@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Header from "components/Header/Header";
@@ -32,6 +32,7 @@ const options = {
 };
 
 const Home_Dashboard = (props) => {
+  
   const login = useSelector(state=>state.login).user.data;
   const emailCheck =  localStorage.getItem('email');
 
@@ -39,6 +40,7 @@ const Home_Dashboard = (props) => {
     props.history.push("/");
     window.location.reload();
   }
+
 
   const { ...rest } = props;
   const classes = useStyles();
@@ -63,6 +65,8 @@ const Home_Dashboard = (props) => {
   const [achievementData,setAchievementData] = useState(achievements);
   const [educationData, setEducationData] = useState(education);
   const [loading,setLoading] = useState(false);
+
+
   // const [educationData, setEducationData] = useState(education);
 
   //Funtions in this page
@@ -72,7 +76,7 @@ const Home_Dashboard = (props) => {
 
   const handleAddWorkEx = () => UpdateWorkExModal(true);
   const closeWorkExModal = (value) => {    
-    setLoading(true);
+    setLoading(true);    
     const data = {
       id : loginState.user.data._id,
       data : value,

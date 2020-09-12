@@ -65,28 +65,46 @@ const Login_CreateProfile = (props) => {
   const [err,handleError] = useState(false);
   const dispatch = useDispatch();
   const handleActiveState = (step) =>{
-    let isEverythingOk = true;
 
-    // if(activeStep === 0){
-    //   if(
-    //       state.bio.length===0 || 
-    //       state.education.name.length ===0 || 
-    //       state.education.degree.length === 0 ||
-    //       state.education.course.length === 0 
-    //     ){
-    //     handleError(true);
-    //     isEverythingOk = false;
-    //   }
-    // }else if(activeStep===1){
+    if(activeStep === 0){
+      if(
+          state.bio.length===0 || 
+          state.education.name.length ===0 || 
+          state.education.degree.length === 0 ||
+          state.education.course.length === 0 
+        ){
+          alert("Please Enter all the required fields");
+      }else{
+        setActiveStep( step )
+      }
+    }else if(activeStep===1){
+      if(
+        state.skills.length < 1 ||   
+        state.projects.name.length === 0 ||
+        state.projects.techstack.length < 1     
+      ){
+          alert("Please Enter all the required fields");
+      }else{
+        setActiveStep( step )
+      }
 
-    // }else if(activeStep===2){
-
-    // }else if(activeStep === 3){
-
-    // }
-
-    if(isEverythingOk){
-      setActiveStep( step )
+    }else if(activeStep===2){
+      if(
+        state.workex.position.length  === 0 ||   
+        state.workex.company_name.length === 0         
+      ){
+          alert("Please Enter all the required fields");
+      }else{
+        setActiveStep( step )
+      }
+    }else if(activeStep === 3){
+      if(
+        state.achievements.name.length  === 0       
+      ){
+          alert("Please Enter all the required fields");
+      }else{
+        setActiveStep( step )
+      }
     }
     
   }
@@ -247,9 +265,15 @@ const Login_CreateProfile = (props) => {
           isRecruiter : localStorage.getItem('isRecruiter') ==="true" ,
           skills : skills
         }
-        dispatch(userDataUpdate(final_data))
-        props.history.push('/feed');
+        dispatch(userDataUpdate(final_data))        
+              
     })
+
+
+    setTimeout(function() {
+      props.history.push('/feed');
+    }, 5000);
+    
 
   }
 

@@ -52,7 +52,7 @@ const ProfileEducation = (props) => {
       <Grid direction="column" container xs={12} lg={12} sm={12} style={styles}>
         <GridItem>
           <ul>
-            {props.data.map((value, index) => (
+            {props.data === undefined ? " " : props.data.map((value, index) => (
               <li>
                 <div>
                   <h5>{value.name}</h5>

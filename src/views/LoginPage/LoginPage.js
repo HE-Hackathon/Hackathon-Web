@@ -56,77 +56,116 @@ export default function LoginPage(props) {
   //Handle Submit
   const handleSubmit = () => { 
     
-    setLoading(true);
-
-    const options = {
-      headers : {
-        "Content-Type":"application/json",
-        "Access-Control-Allow-Origin" : "*"
-      }
-    };
-    
-    let data = {
-      email : state.email,
-      pass : state.pass,
-      isRecruiter : state.role === "developer" ? false : true,      
-      gender : state.gender,
-    };    
-
-    if( path === '/register' ){
-
-      const register = "/regist_succ";     
-        
-      if(data.isRecruiter){
-        data.company_name = state.company_name;
-        data.associated_since_in_years = state.associated_since_in_years;
-      }
-
-      data['name'] = state.name;            
-      axios.post( baseUrl + register , data, options )
-        .then((res)=>{
-          console.log(res.data);
-          const data = res.data;
-          if(data.success===true){
-            props.history.push('/verify');
-          }else{
-            alert("User already registered");
-          }
-          setLoading(false);
-        })
-
-    }else{      
+      setLoading(true);
+      const options = {
+        headers : {
+          "Content-Type":"application/json",
+          "Access-Control-Allow-Origin" : "*"
+        }
+      };
       
-      const login = "/login_succ";    
-      axios.post( baseUrl + login , data, options)
-        .then((res)=>{
-          console.log(res.data);
-          const datares = res.data;
-          dispatch(userData(res.data));     
-
-          if(datares.value===200){
-            if(datares.data.isVerified === false ){
-              alert('Please Verify Your Account');
-            }else{       
-              localStorage.setItem('isLogin',1);         
-              if(datares.isRecruiter){                             
-                props.history.push('/rdashboard');
-              }else{
-                if(datares.data.isCreatedProfile === true){                                                   
-                  props.history.push('/feed');
-                }else {                                                                  
-                  props.history.push('/createprofile');
-                } 
-              }                                   
-            }            
-          }else if(datares.value===400){
-            alert("Username/Password do not match");
-          }else if(datares.value===500){
-            alert("Please Register First");
-          }  
+      let data = {
+        email : state.email,
+        pass : state.pass,
+        isRecruiter : state.role === "developer" ? false : true,      
+        gender : state.gender,
+      };    
+  
+      if( path === '/register' ){
+        if( state.gender.length === 0 || 
+          state.name.length === 0 || 
+          state.email.length===0 || 
+          state.pass.length === 0 || 
+          state.role.length === 0  ){
+          alert("Please enter all the fields");
           setLoading(false);
-        })
+        }else{
+
+          if(state.role === "developer"){
+
+            const register = "/regist_succ";           
+      
+            data['name'] = state.name;            
+            axios.post( baseUrl + register , data, options )
+              .then((res)=>{
+                console.log(res.data);
+                const data = res.data;
+                if(data.success===true){
+                  props.history.push('/verify');
+                }else{
+                  alert("User already registered");
+                }
+                setLoading(false);
+              })
+          }else{
+            if(state.company_name.length===0 || state.associated_since_in_years.length===0){
+              alert("Please enter all the fields");
+              setLoading(false);
+            }else{
+              const register = "/regist_succ";     
+            
+              if(data.isRecruiter){
+                data.company_name = state.company_name;
+                data.associated_since_in_years = state.associated_since_in_years;
+              }
         
+              data['name'] = state.name;            
+              axios.post( baseUrl + register , data, options )
+                .then((res)=>{
+                  console.log(res.data);
+                  const data = res.data;
+                  if(data.success===true){
+                    props.history.push('/verify');
+                  }else{
+                    alert("User already registered");
+                  }
+                  setLoading(false);
+                })
+            }
+          }
+          
+        }
+  
+      }else{      
+        if( state.email.length===0 || state.pass.length === 0 || state.role.length === 0 ){
+          alert("Please enter all the fields");
+          setLoading(false);
+        }else{
+          const login = "/login_succ";    
+          axios.post( baseUrl + login , data, options)
+            .then((res)=>{
+              console.log(res.data);
+              const datares = res.data;
+              dispatch(userData(res.data));     
+    
+              if(datares.value===200){
+                if(datares.data.isVerified === false ){
+                  alert('Please Verify Your Account');
+                }else{       
+                  localStorage.setItem('isLogin',1);         
+                  if(datares.isRecruiter){                             
+                    props.history.push('/rdashboard');
+                  }else{
+                    if(datares.data.isCreatedProfile === true){                                                   
+                      props.history.push('/dashboard');
+                    }else {                                                                  
+                      props.history.push('/createprofile');
+                    } 
+                  }                                   
+                }            
+              }else if(datares.value===400){
+                alert("Username/Password do not match");
+              }else if(datares.value===500){
+                alert("Please Register First");
+              }  
+              setLoading(false);
+            })
+          }
+
     }
+
+
+   
   }
   
   const name =

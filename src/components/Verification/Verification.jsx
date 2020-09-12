@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Verification = (props) => {
   return (
     <div style={{ height: "100vh" }}>
-      <Container style={{ paddingTop: 30 }}>
+      <Container style={{ paddingTop: 150 }}>
         <Container
           maxWidth="lg"
           style={{
@@ -29,6 +29,18 @@ const Verification = (props) => {
           }}
         >
           A verification link has been sent to your mail
+        </Container>
+        <Container
+          maxWidth="lg"
+          style={{
+            fontSize: "4vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 30,
+          }}
+        >
+          Please check your spam folder if you haven't received any mail
         </Container>
       </Container>
       <Container

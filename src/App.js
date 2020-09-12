@@ -60,7 +60,7 @@ const App = () => {
   return (    
     <Router history={hist}>      
         <Header
-          brand="Welcome to Recruit-a-thon"
+          brand="Welcome to Hire-With-Us"
           rightLinks={<HeaderLinks flag={flag} />}
           fixed
           color="black"

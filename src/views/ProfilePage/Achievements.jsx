@@ -28,8 +28,9 @@ export default function Achievements(props) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom >
-        Achievement (if any)
-      </Typography>      
+        Achievement
+      </Typography> 
+      <small>Write NA if No Achievements</small>     
       <Grid container spacing={3}>
         <Grid item xs={12} style={{ marginTop: 10 }}>
           <TextField

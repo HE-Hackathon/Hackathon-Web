@@ -22,7 +22,7 @@ const WorkEx = (props) => {
   const classes = props.classes;
   return (
     <Grid xs={12} lg={12} >
-      {props.data.map((value, index) => (
+      { props.data === undefined ? " " :props.data.map((value, index) => (
         <GridItem item xs={12} lg={12} sm={12} style={styles} key={value.id}>
           <Card className={classes.root} style={{ padding: 10 }}>
             <CardHeader

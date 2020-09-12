@@ -32,8 +32,9 @@ export default function Review(props) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom >
-        Work Experience (if any)
+        Work Experience / Internship      
       </Typography>     
+      <small>Write NA if no Work Experience / Internship</small>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} style={{ marginTop: 10 }}>
           <TextField

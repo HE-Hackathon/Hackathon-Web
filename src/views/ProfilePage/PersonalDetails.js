@@ -42,6 +42,7 @@ import { useSelector } from "react-redux";
       <Grid container spacing={3}>
         <Grid item xs={12} lg={12} style={{ marginTop: 10 }}>
           <TextField
+            required
             id="outlined-multiline-static"
             name = "bio"
             label="About Yourself"
@@ -58,7 +59,7 @@ import { useSelector } from "react-redux";
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
+            
             id="github"
             name="github"
             label="GitHub Profile Link"
@@ -70,7 +71,7 @@ import { useSelector } from "react-redux";
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
+            
             id="linkedin"
             name="linkedin"
             label="LinkedIn Profile Link"
@@ -150,8 +151,7 @@ import { useSelector } from "react-redux";
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            required
+          <TextField            
             id="score"
             name="score"
             label="Grade"

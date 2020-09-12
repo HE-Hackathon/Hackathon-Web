@@ -33,6 +33,7 @@ export default function ProjectSkills(props) {
       <Grid container spacing={3}>
         <Grid item xs={12} style={{ marginTop: 20 }}>
           <Autocomplete
+            required
             multiple
             id="size-small-outlined-multi"
             size="small"            
@@ -45,7 +46,7 @@ export default function ProjectSkills(props) {
               <TextField
                 {...params}
                 variant="outlined"
-                label="Select your skills"
+                label="Select your skills ( Atleast One ) *"
                 placeholder="Skill"
               />
             )}
@@ -99,7 +100,7 @@ export default function ProjectSkills(props) {
               <TextField
                 {...params}
                 variant="outlined"
-                label="Technologies Used"
+                label="Technologies Used ( Atleast One ) * "
                 placeholder="Select"
               />
             )}

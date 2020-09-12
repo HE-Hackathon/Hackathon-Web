@@ -21,7 +21,7 @@ const ProfileAchievements = (props) => {
   return (
     <Grid xs={12} lg={12} >
 
-      {props.data.map((value, index) => (
+      {props.data === undefined ? " " : props.data.map((value, index) => (
         <GridItem item lg={12} sm={5} xs={5} style={styles}>
           <Card key={value.id} className={classes.root} style={{ padding: 10 }}>
           <CardHeader
